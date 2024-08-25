@@ -2,7 +2,7 @@
 #include<stdbool.h>
 #include "headers.h"
 
-void Decode(unsigned char* arr)
+unsigned long long int Decode(unsigned char* arr)
 {
 	unsigned char val,temp = 0;
 	unsigned char cur_bits = 2;
@@ -46,30 +46,27 @@ void Decode(unsigned char* arr)
 
 /*... END of FETCHING count of Bits in which Count/Length is stored. ...*/
 	
-	//printf("\nLength is stored in next %d bits.\n",val);
-	//printf("Total bits for sequence %d \n\n",bit_seq_len);
-
-
 	/* val - Number of bits in which Length/Count is stored. */
 	/* bit_seq_len - Number of bits taken to store sequence of Length/Count. */
 
 /*... DECODING actual COUNT/LENGTH ...*/
 
 	//TOTAL bits to store whole encoded sequence
-	unsigned char total_bits = val + bit_seq_len;//27+13
-	unsigned char remn = total_bits % 8;//40 % 8 = 0
-	int k = (total_bits/8) + !!(total_bits % 8);//5+0
-	k -= 1 ;//4
-	int size = ((val / 8) + !!(val % 8));//3+1
+	unsigned char total_bits = val + bit_seq_len;
+	unsigned char remn = total_bits % 8;
+	int k = (total_bits/8) + !!(total_bits % 8);
+	k -= 1 ;
+	int size = ((val / 8) + !!(val % 8));
 	unsigned char value = 0;
 	unsigned char *res =  (unsigned char*) calloc(size, sizeof(unsigned char));
 
-	for(int i = (size - 1); i >= 0; i--)//i=3,2,1,0
+	for(int i = (size - 1); i >= 0; i--)
 	{
 		if(remn > 0)
 		{
 			*(res + i) = (*(arr + k) >> (8 - remn));
 			k -= 1;
+			if(k < 0) break;
 			*(res + i) |= (*(arr + k) << remn);
 		}
 		else
@@ -84,7 +81,7 @@ void Decode(unsigned char* arr)
 /*... END of FETCHING actual COUNT/LENGTH ...*/
 
 
-/*... PRINTING DECODED SEQUENCE ...*/
+/*... DECODED SEQUENCE to Number...*/
 
 	unsigned long long int count = 0;
 	unsigned char* ptr = (unsigned char*) &count;
@@ -92,9 +89,8 @@ void Decode(unsigned char* arr)
 	{
 		*(ptr + (size - 1 - i)) = *(res + i);
 	}
-	printf("\n");
-	printf("Count is : %llu\n",count);
-	printf("\n");
 
-/*... END of PRINTING DECODED SEQUENCE ...*/
+/*... END ...*/
+
+	return count;
 }

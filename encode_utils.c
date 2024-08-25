@@ -18,11 +18,14 @@ unsigned char Count_Bits(unsigned long long int e)
 int Encode(unsigned char len, unsigned char *temp_in, unsigned char *out)
 {
 	unsigned char bits_for_len = 0;
-	if(len == 1)
+	if(len == 0 || len == 1)
 	{
 		len = 2;
 	}
-	bits_for_len = Count_Bits(len);// 40-> 6 bits	
+	
+	bits_for_len = Count_Bits(len);
+
+
 /*.... Creating Array of Lengths ....*///[THIS PART OF CODE IS CORRECT]
 
 	unsigned char *lengths_arr;
@@ -72,12 +75,11 @@ int Encode(unsigned char len, unsigned char *temp_in, unsigned char *out)
 	{
 		value = *(lengths_arr + i);
 		bits = Count_Bits(value);
-
+		
 		if( (rem_bits - (bits + 1)) > 0)
 		{
 			value <<= (rem_bits - bits);
 			*temp_out |= value;
-
 			rem_bits -= (bits + 1);
 		}
 		else if((rem_bits - (bits + 1)) < 0)
@@ -88,7 +90,6 @@ int Encode(unsigned char len, unsigned char *temp_in, unsigned char *out)
 			value = *(lengths_arr + i);
 			value <<= (8 - (bits - rem_bits));
 			*(temp_out += 1) |= value;
-
 			rem_bits = (8 - (bits - rem_bits)) - 1;
 		}
 		else
@@ -134,13 +135,12 @@ int Encode(unsigned char len, unsigned char *temp_in, unsigned char *out)
 /*.... Appending actual length sequence  ....*/ //[THIS PART OF CODE IS CORRECT]
 	
 	terminator = len / 8;
-        terminator += (!!(len % 8)); // 4
+        terminator += (!!(len % 8));
 	temp_out = out;
 	// k variable which will point to byte of in in which value should be stored.
-        k = (pre_seq_bits / 8); //13 / 8 = 1 start storing from byte where previous sequence is ended
-        remn = (pre_seq_bits % 8); //13 % 8 = 6 remn will tell me that how many bits i've to skip in each byte so that previous sequence will be unchanged.
+        k = (pre_seq_bits / 8);//start storing from byte where previous sequence is ended
+        remn = (pre_seq_bits % 8); //remn will tell me that how many bits i've to skip in each byte so that previous sequence will be unchanged.
 	
-	printf("\n");			   
 	for(int i = 0; i < terminator; i++)
         {
                 value = *(in + i);
@@ -153,14 +153,13 @@ int Encode(unsigned char len, unsigned char *temp_in, unsigned char *out)
 
 
 /*....PRINTING Encoded sequence....*/ // [BELOW CODE IS CORRECT]
-	
+/*	
 	printf("Encoded Sequence in bits\n");
 
-	terminator = (pre_seq_bits + len)/8 < 1 ? 1 : (pre_seq_bits + len)/8;
+	terminator = (pre_seq_bits + len)/8;
 	for(int i = 0; i < terminator; i++)
 	{
 		print_bits(*(out + i));
-//		printf("%d ",*(out + i));
 	}
 	//Printing remaining bits separate as they can be less than 8 
 	unsigned char rem = 8 - ((pre_seq_bits + len) % 8);
@@ -168,8 +167,8 @@ int Encode(unsigned char len, unsigned char *temp_in, unsigned char *out)
 	{
 		printf("%d",(*(out + terminator) & (1 << i)) > 0 ? 1 : 0);
 	}	
-	printf("\n\n");
-
+	printf("\n");
+*/
 /*....END of PRINTING Encoded sequence....*/	
 	
 	return (pre_seq_bits + len);
