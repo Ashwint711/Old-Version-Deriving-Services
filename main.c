@@ -13,7 +13,7 @@ union un
 
 /*
  *  The Maximum number as a Count this version can work with is : 18446744073709551615
- *  18446744073709551615 BYTE's [Approx 1 EXABYTE]
+ *  18446744073709551615 BYTE's [ Approx 1 EXABYTE ]
  */
 
 int main()
