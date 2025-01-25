@@ -16,6 +16,6 @@ For example :
 10000
 ```
 
-Run following command, and give name of a file in which the result will be stored.
+Run following command, and give name of a file in which the result will be stored, here it is `output`
 > ./run tests output
 
